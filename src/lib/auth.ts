@@ -7,7 +7,7 @@ export const verifyAdminCode = (code: string): boolean => {
 
 export const setAuthCookie = (token: string): void => {
   if (typeof document === 'undefined') return;
-  document.cookie = `${AUTH_COOKIE}=${token}; path=/; max-age=2592000`; // 30일
+  document.cookie = `${AUTH_COOKIE}=${token}; path=/; max-age=2592000; SameSite=Lax`; // 30일
 };
 
 export const getAuthCookie = (): string | null => {
@@ -27,7 +27,7 @@ export const getAuthCookie = (): string | null => {
 
 export const removeAuthCookie = (): void => {
   if (typeof document === 'undefined') return;
-  document.cookie = `${AUTH_COOKIE}=; path=/; max-age=0`;
+  document.cookie = `${AUTH_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
 };
 
 export const generateAuthToken = (): string => {
