@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom, errorMessageAtom } from '@/store/atoms';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { User, Attendance } from '@/types';
+import { queryClient } from '@/app/providers';
 
 async function fetchEvent(id: string) {
   const response = await fetch(`/api/events/${id}`);
@@ -49,7 +50,6 @@ export default function EventDetailPage() {
   const [, setError] = useAtom(errorMessageAtom);
   const router = useRouter();
   const params = useParams() as { id: string };
-  const queryClient = useQueryClient();
   const eventId = params.id;
 
   const [selectAll, setSelectAll] = useState(false);
@@ -85,13 +85,10 @@ export default function EventDetailPage() {
 
   const updateMutation = useMutation({
     mutationFn: updateAttendance,
-  });
-
-  useEffect(() => {
-    if (updateMutation.isSuccess) {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['attendance', eventId] });
-    }
-  }, [updateMutation.isSuccess]);
+    },
+  });
 
   useEffect(() => {
     if (updateMutation.isError) {

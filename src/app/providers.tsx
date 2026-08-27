@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { darkModeAtom, isAuthenticatedAtom } from '@/store/atoms';
 import { getAuthCookie } from '@/lib/auth';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [, setDarkMode] = useAtom(darkModeAtom);
