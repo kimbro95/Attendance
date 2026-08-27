@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated === false) {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
@@ -35,7 +35,7 @@ export default function DashboardPage() {
     ? Math.round(stats.reduce((sum, s) => sum + s.attend_count, 0) / (stats.length * totalUsers) * 100) || 0
     : 0;
 
-  if (!isAuthenticated) return null;
+  if (isAuthenticated === false) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

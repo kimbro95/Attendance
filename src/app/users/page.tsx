@@ -52,7 +52,7 @@ export default function UsersPage() {
   const [formData, setFormData] = useState({ name: '', email: '' });
 
   useEffect(() => {
-    if (!isAuthenticated) router.push('/login');
+    if (isAuthenticated === false) router.push('/login');
   }, [isAuthenticated, router]);
 
   const { data: users = [], isLoading } = useQuery({
@@ -149,7 +149,7 @@ export default function UsersPage() {
     setFormData({ name: '', email: '' });
   };
 
-  if (!isAuthenticated) return null;
+  if (isAuthenticated === false) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -57,7 +57,7 @@ export default function EventDetailPage() {
   const [attendanceMap, setAttendanceMap] = useState<Record<string, 'ATTEND' | 'OPPOSE' | undefined>>({});
 
   useEffect(() => {
-    if (!isAuthenticated) router.push('/login');
+    if (isAuthenticated === false) router.push('/login');
   }, [isAuthenticated, router]);
 
   const { data: event } = useQuery({
@@ -134,7 +134,7 @@ export default function EventDetailPage() {
   const attendCount = Object.values(attendanceMap).filter((s) => s === 'ATTEND').length;
   const opposeCount = Object.values(attendanceMap).filter((s) => s === 'OPPOSE').length;
 
-  if (!isAuthenticated) return null;
+  if (isAuthenticated === false) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

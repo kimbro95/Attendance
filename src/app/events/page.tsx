@@ -41,7 +41,7 @@ export default function EventsPage() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated) router.push('/login');
+    if (isAuthenticated === false) router.push('/login');
   }, [isAuthenticated, router]);
 
   const { data: events = [], isLoading } = useQuery({
@@ -94,7 +94,7 @@ export default function EventsPage() {
     createMutation.mutate(formData);
   };
 
-  if (!isAuthenticated) return null;
+  if (isAuthenticated === false) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
