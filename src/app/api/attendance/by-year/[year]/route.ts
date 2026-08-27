@@ -28,25 +28,6 @@ export async function GET(
       );
     }
 
-    const eventIds = events?.map((e) => e.id) || [];
-
-    if (eventIds.length === 0) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-
-    const { data: attendance, error: attendanceError } = await supabase
-      .from('attendance')
-      .select('user_id, status')
-      .in('event_id', eventIds)
-      .eq('status', 'ATTEND');
-
-    if (attendanceError) {
-      return NextResponse.json(
-        { success: false, error: attendanceError.message },
-        { status: 500 }
-      );
-    }
-
     const { data: users, error: usersError } = await supabase
       .from('users')
       .select('id, name');
@@ -58,18 +39,34 @@ export async function GET(
       );
     }
 
+    const eventIds = events?.map((e) => e.id) || [];
     const userMap = new Map(users?.map((u) => [u.id, u.name]) || []);
     const attendanceByUser = new Map<string, number>();
 
-    attendance?.forEach((a) => {
-      attendanceByUser.set(a.user_id, (attendanceByUser.get(a.user_id) || 0) + 1);
-    });
+    if (eventIds.length > 0) {
+      const { data: attendance, error: attendanceError } = await supabase
+        .from('attendance')
+        .select('user_id, status')
+        .in('event_id', eventIds)
+        .eq('status', 'ATTEND');
 
-    const stats: UserAttendanceStats[] = Array.from(attendanceByUser.entries())
-      .map(([userId, count]) => ({
-        user_id: userId,
-        user_name: userMap.get(userId) || 'Unknown',
-        attend_count: count,
+      if (attendanceError) {
+        return NextResponse.json(
+          { success: false, error: attendanceError.message },
+          { status: 500 }
+        );
+      }
+
+      attendance?.forEach((a) => {
+        attendanceByUser.set(a.user_id, (attendanceByUser.get(a.user_id) || 0) + 1);
+      });
+    }
+
+    const stats: UserAttendanceStats[] = (users || [])
+      .map((user) => ({
+        user_id: user.id,
+        user_name: user.name,
+        attend_count: attendanceByUser.get(user.id) || 0,
       }))
       .sort((a, b) => b.attend_count - a.attend_count);
 
