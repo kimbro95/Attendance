@@ -115,7 +115,7 @@ export default function LoginPage() {
 
         <div className="mt-6 p-4 bg-[rgb(var(--bg-tertiary))] rounded-lg">
           <p className="text-xs text-[rgb(var(--text-tertiary))]">
-            💡 .env 파일에 설정된 6자리 관리자 코드를 입력하세요.
+            💡 6자리 관리자 코드를 입력해주세요. 코드를 모르신다면 관리 담당자에게 문의해주세요.
           </p>
         </div>
       </div>
