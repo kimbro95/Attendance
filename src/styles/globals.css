@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 라이트모드 (기본값) */
+:root {
+  --primary: 59, 130, 246; /* blue-500 */
+  --primary-dark: 37, 99, 235; /* blue-600 */
+  --primary-light: 96, 165, 250; /* blue-400 */
+
+  --secondary: 8, 145, 178; /* cyan-600 */
+  --accent: 239, 68, 68; /* red-500 */
+
+  --bg-primary: 255, 255, 255; /* white */
+  --bg-secondary: 249, 250, 251; /* gray-50 */
+  --bg-tertiary: 243, 244, 246; /* gray-100 */
+
+  --text-primary: 17, 24, 39; /* gray-900 */
+  --text-secondary: 55, 65, 81; /* gray-700 */
+  --text-tertiary: 107, 114, 128; /* gray-500 */
+
+  --border: 229, 231, 235; /* gray-200 */
+  --border-dark: 209, 213, 219; /* gray-300 */
+
+  --success: 16, 185, 129; /* green-500 */
+  --warning: 245, 158, 11; /* amber-500 */
+  --error: 239, 68, 68; /* red-500 */
+}
+
+/* 다크모드 */
+:root.dark {
+  --primary: 96, 165, 250; /* blue-400 */
+  --primary-dark: 59, 130, 246; /* blue-500 */
+  --primary-light: 147, 197, 253; /* blue-300 */
+
+  --secondary: 34, 197, 224; /* cyan-400 */
+  --accent: 248, 113, 113; /* red-400 */
+
+  --bg-primary: 17, 24, 39; /* gray-900 */
+  --bg-secondary: 31, 41, 55; /* gray-800 */
+  --bg-tertiary: 55, 65, 81; /* gray-700 */
+
+  --text-primary: 243, 244, 246; /* gray-100 */
+  --text-secondary: 209, 213, 219; /* gray-300 */
+  --text-tertiary: 156, 163, 175; /* gray-400 */
+
+  --border: 55, 65, 81; /* gray-700 */
+  --border-dark: 75, 85, 99; /* gray-600 */
+
+  --success: 52, 211, 153; /* green-400 */
+  --warning: 251, 191, 36; /* amber-400 */
+  --error: 248, 113, 113; /* red-400 */
+}
+
+@layer base {
+  body {
+    @apply bg-[rgb(var(--bg-primary))] text-[rgb(var(--text-primary))];
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  a {
+    @apply text-[rgb(var(--primary))] hover:text-[rgb(var(--primary-dark))] transition-colors;
+  }
+
+  button {
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[rgb(var(--primary))] text-white px-4 py-2 rounded-lg font-medium hover:bg-[rgb(var(--primary-dark))] transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-[rgb(var(--bg-tertiary))] text-[rgb(var(--text-primary))] px-4 py-2 rounded-lg font-medium hover:bg-[rgb(var(--border-dark))] transition-colors;
+  }
+
+  .btn-danger {
+    @apply bg-[rgb(var(--error))] text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .card {
+    @apply bg-[rgb(var(--bg-secondary))] border border-[rgb(var(--border))] rounded-lg p-4;
+  }
+
+  .input {
+    @apply bg-[rgb(var(--bg-primary))] border border-[rgb(var(--border))] text-[rgb(var(--text-primary))] px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary))];
+  }
+}
