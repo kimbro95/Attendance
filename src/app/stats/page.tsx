@@ -87,50 +87,55 @@ export default function StatsPage() {
             {[...stats].sort((a, b) => b.attend_count - a.attend_count).map((stat) => (
               <div
                 key={stat.event_id}
-                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between"
+                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4"
               >
-                <div className="flex-1">
-                  <p className="font-medium text-[rgb(var(--text-primary))]">
-                    {stat.event_title}
-                  </p>
-                  <p className="text-sm text-[rgb(var(--text-secondary))] mt-1">
-                    {new Date(stat.event_date).toLocaleDateString('ko-KR', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </p>
+                <p className="font-medium text-[rgb(var(--text-primary))] text-base mb-3">
+                  {stat.event_title}
+                </p>
+
+                <div className="border-t border-b border-[rgb(var(--border))] py-3 mb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-6">
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-[rgb(var(--success))]">
+                          {stat.attend_count}
+                        </p>
+                        <p className="text-xs text-[rgb(var(--text-tertiary))]">
+                          참석
+                        </p>
+                      </div>
+
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-[rgb(var(--error))]">
+                          {stat.oppose_count}
+                        </p>
+                        <p className="text-xs text-[rgb(var(--text-tertiary))]">
+                          불참
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[rgb(var(--primary))] to-[rgb(var(--secondary))] flex items-center justify-center mb-1">
+                        <span className="text-white font-bold text-xs">
+                          {stat.attend_percentage}%
+                        </span>
+                      </div>
+                      <p className="text-xs text-[rgb(var(--text-tertiary))]">
+                        출석률
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-[rgb(var(--success))]">
-                      {stat.attend_count}
-                    </p>
-                    <p className="text-xs text-[rgb(var(--text-tertiary))]">
-                      참석
-                    </p>
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-[rgb(var(--error))]">
-                      {stat.oppose_count}
-                    </p>
-                    <p className="text-xs text-[rgb(var(--text-tertiary))]">
-                      불참
-                    </p>
-                  </div>
-
-                  <div className="text-center min-w-[80px]">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[rgb(var(--primary))] to-[rgb(var(--secondary))] flex items-center justify-center mx-auto mb-1">
-                      <span className="text-white font-bold text-sm">
-                        {stat.attend_percentage}%
-                      </span>
-                    </div>
-                    <p className="text-xs text-[rgb(var(--text-tertiary))]">
-                      출석률
-                    </p>
-                  </div>
+                <div className="text-right">
+                  <p className="text-xs text-[rgb(var(--text-secondary))]">
+                    {new Date(stat.event_date).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })}
+                  </p>
                 </div>
               </div>
             ))}
