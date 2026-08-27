@@ -9,11 +9,12 @@ interface UserAttendanceStats {
 }
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { year: string } }
+  _: NextRequest,
+  { params }: { params: Promise<{ year: string }> }
 ): Promise<NextResponse<ApiResponse<UserAttendanceStats[]>>> {
   try {
-    const year = parseInt(params.year);
+    const { year: yearStr } = await params;
+    const year = parseInt(yearStr);
 
     const { data: events, error: eventsError } = await supabase
       .from('events')
@@ -40,7 +41,6 @@ export async function GET(
     }
 
     const eventIds = events?.map((e) => e.id) || [];
-    const userMap = new Map(users?.map((u) => [u.id, u.name]) || []);
     const attendanceByUser = new Map<string, number>();
 
     if (eventIds.length > 0) {
