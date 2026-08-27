@@ -81,7 +81,7 @@ export default function EventDetailPage() {
       map[a.user_id] = a.status;
     });
     setAttendanceMap(map);
-  }, []);
+  }, [attendanceData]);
 
   const updateMutation = useMutation({
     mutationFn: updateAttendance,
