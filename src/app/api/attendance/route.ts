@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { ApiResponse, Attendance, AttendanceStats } from '@/types';
+import { ApiResponse, Attendance } from '@/types';
 
 export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse<Attendance[]>>> {
   try {

@@ -48,13 +48,13 @@ export default function EventDetailPage() {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, setError] = useAtom(errorMessageAtom);
   const router = useRouter();
-  const params = useParams();
+  const params = useParams() as { id: string };
   const queryClient = useQueryClient();
-  const eventId = params.id as string;
+  const eventId = params.id;
 
   const [selectAll, setSelectAll] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<'ATTEND' | 'OPPOSE'>('ATTEND');
-  const [attendanceMap, setAttendanceMap] = useState<Record<string, 'ATTEND' | 'OPPOSE'>>({});
+  const [attendanceMap, setAttendanceMap] = useState<Record<string, 'ATTEND' | 'OPPOSE' | undefined>>({});
 
   useEffect(() => {
     if (!isAuthenticated) router.push('/login');
@@ -70,25 +70,34 @@ export default function EventDetailPage() {
     queryFn: fetchUsers,
   });
 
-  const { data: attendance = [] } = useQuery({
+  const { data: attendanceData = [] } = useQuery({
     queryKey: ['attendance', eventId],
     queryFn: () => fetchAttendance(eventId),
-    onSuccess: (data) => {
-      const map: Record<string, 'ATTEND' | 'OPPOSE'> = {};
-      data.forEach((a) => {
-        map[a.user_id] = a.status;
-      });
-      setAttendanceMap(map);
-    },
   });
+
+  useEffect(() => {
+    const map: Record<string, 'ATTEND' | 'OPPOSE'> = {};
+    attendanceData.forEach((a) => {
+      map[a.user_id] = a.status;
+    });
+    setAttendanceMap(map);
+  }, [attendanceData]);
 
   const updateMutation = useMutation({
     mutationFn: updateAttendance,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', eventId] });
-    },
-    onError: () => setError('출석 저장에 실패했습니다.'),
   });
+
+  useEffect(() => {
+    if (updateMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['attendance', eventId] });
+    }
+  }, [updateMutation.isSuccess]);
+
+  useEffect(() => {
+    if (updateMutation.isError) {
+      setError('출석 저장에 실패했습니다.');
+    }
+  }, [updateMutation.isError]);
 
   const handleToggle = (userId: string, status: 'ATTEND' | 'OPPOSE') => {
     const newStatus = attendanceMap[userId] === status ? undefined : status;

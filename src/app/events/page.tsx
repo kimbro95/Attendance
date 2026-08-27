@@ -51,19 +51,39 @@ export default function EventsPage() {
 
   const createMutation = useMutation({
     mutationFn: createEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] });
-      setFormData({ title: '', event_date: '' });
-      setShowForm(false);
-    },
-    onError: () => setError('일정 생성에 실패했습니다.'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteEvent,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] }),
-    onError: () => setError('일정 삭제에 실패했습니다.'),
   });
+
+  useEffect(() => {
+    if (createMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      setFormData({ title: '', event_date: '' });
+      setShowForm(false);
+      createMutation.reset();
+    }
+  }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      deleteMutation.reset();
+    }
+  }, [deleteMutation.isSuccess]);
+
+  useEffect(() => {
+    if (createMutation.isError) {
+      setError('일정 생성에 실패했습니다.');
+    }
+  }, [createMutation.isError]);
+
+  useEffect(() => {
+    if (deleteMutation.isError) {
+      setError('일정 삭제에 실패했습니다.');
+    }
+  }, [deleteMutation.isError]);
 
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();

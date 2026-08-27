@@ -61,31 +61,60 @@ export default function UsersPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => createUser(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      setFormData({ name: '', email: '' });
-      setShowForm(false);
-    },
-    onError: () => setError('유저 생성에 실패했습니다.'),
+    mutationFn: (data: { name: string; email?: string }) => createUser(data),
   });
 
   const updateMutation = useMutation({
     mutationFn: (data: { id: string; name?: string; email?: string }) =>
       updateUser(data.id, { name: data.name, email: data.email }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      setFormData({ name: '', email: '' });
-      setEditingId(null);
-    },
-    onError: () => setError('유저 수정에 실패했습니다.'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
-    onError: () => setError('유저 삭제에 실패했습니다.'),
   });
+
+  useEffect(() => {
+    if (createMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setFormData({ name: '', email: '' });
+      setShowForm(false);
+      createMutation.reset();
+    }
+  }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (updateMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setFormData({ name: '', email: '' });
+      setEditingId(null);
+      updateMutation.reset();
+    }
+  }, [updateMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMutation.isSuccess) {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      deleteMutation.reset();
+    }
+  }, [deleteMutation.isSuccess]);
+
+  useEffect(() => {
+    if (createMutation.isError) {
+      setError('유저 생성에 실패했습니다.');
+    }
+  }, [createMutation.isError]);
+
+  useEffect(() => {
+    if (updateMutation.isError) {
+      setError('유저 수정에 실패했습니다.');
+    }
+  }, [updateMutation.isError]);
+
+  useEffect(() => {
+    if (deleteMutation.isError) {
+      setError('유저 삭제에 실패했습니다.');
+    }
+  }, [deleteMutation.isError]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
