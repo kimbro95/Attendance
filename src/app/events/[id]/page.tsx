@@ -104,6 +104,10 @@ export default function EventDetailPage() {
     }
   }, [updateMutation.isError]);
 
+  const eligibleUsers = event
+    ? users.filter((user) => new Date(user.created_at) <= new Date(event.event_date))
+    : [];
+
   const handleToggle = (userId: string, status: 'ATTEND' | 'OPPOSE') => {
     const newStatus = attendanceMap[userId] === status ? undefined : status;
 
@@ -121,7 +125,7 @@ export default function EventDetailPage() {
 
   const handleSelectAll = () => {
     const newMap: Record<string, 'ATTEND' | 'OPPOSE'> = {};
-    users.forEach((user) => {
+    eligibleUsers.forEach((user) => {
       if (!selectAll) {
         newMap[user.id] = selectedStatus;
         updateMutation.mutate({
@@ -173,7 +177,7 @@ export default function EventDetailPage() {
         <div className="card text-center">
           <p className="text-[rgb(var(--text-secondary))] text-sm">전체</p>
           <p className="text-3xl font-bold text-[rgb(var(--text-primary))] mt-2">
-            {users.length}
+            {eligibleUsers.length}
           </p>
         </div>
         <div className="card text-center">
@@ -233,10 +237,10 @@ export default function EventDetailPage() {
           👥 유저별 출석 체크
         </h2>
 
-        {users.length === 0 ? (
+        {eligibleUsers.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-[rgb(var(--text-secondary))] mb-4">
-              등록된 유저가 없습니다.
+              {users.length === 0 ? '등록된 유저가 없습니다.' : '이 일정 시점에 등록된 유저가 없습니다.'}
             </p>
             <Link href="/users" className="btn-primary inline-block">
               유저 추가하기
@@ -244,7 +248,7 @@ export default function EventDetailPage() {
           </div>
         ) : (
           <div className="space-y-2">
-            {users.map((user) => (
+            {eligibleUsers.map((user) => (
               <div
                 key={user.id}
                 className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between hover:bg-[rgb(var(--border-dark))] transition-colors"
