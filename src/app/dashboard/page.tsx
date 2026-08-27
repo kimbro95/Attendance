@@ -138,13 +138,13 @@ export default function DashboardPage() {
             {[...stats].sort((a, b) => b.attend_count - a.attend_count).map((stat) => (
               <div
                 key={stat.event_id}
-                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between hover:bg-[rgb(var(--border-dark))] transition-colors"
+                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between hover:bg-[rgb(var(--border-dark))] transition-colors"
               >
-                <div className="flex-1">
-                  <p className="font-medium text-[rgb(var(--text-primary))]">
+                <div className="flex-1 mb-4 md:mb-0">
+                  <p className="font-medium text-[rgb(var(--text-primary))] text-sm md:text-base">
                     {stat.event_title}
                   </p>
-                  <p className="text-sm text-[rgb(var(--text-secondary))] mt-1">
+                  <p className="text-xs md:text-sm text-[rgb(var(--text-secondary))] mt-1">
                     {new Date(stat.event_date).toLocaleDateString('ko-KR', {
                       year: 'numeric',
                       month: 'short',
@@ -153,9 +153,9 @@ export default function DashboardPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center justify-between md:justify-end gap-3 md:gap-6">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-[rgb(var(--success))]">
+                    <p className="text-lg md:text-2xl font-bold text-[rgb(var(--success))]">
                       {stat.attend_count}
                     </p>
                     <p className="text-xs text-[rgb(var(--text-tertiary))]">
@@ -164,7 +164,7 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-[rgb(var(--error))]">
+                    <p className="text-lg md:text-2xl font-bold text-[rgb(var(--error))]">
                       {stat.oppose_count}
                     </p>
                     <p className="text-xs text-[rgb(var(--text-tertiary))]">
@@ -172,9 +172,9 @@ export default function DashboardPage() {
                     </p>
                   </div>
 
-                  <div className="text-center min-w-[80px]">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[rgb(var(--primary))] to-[rgb(var(--secondary))] flex items-center justify-center mx-auto mb-1">
-                      <span className="text-white font-bold text-sm">
+                  <div className="text-center min-w-[70px] md:min-w-[80px]">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-[rgb(var(--primary))] to-[rgb(var(--secondary))] flex items-center justify-center mx-auto mb-1">
+                      <span className="text-white font-bold text-xs md:text-sm">
                         {stat.attend_percentage}%
                       </span>
                     </div>
