@@ -8,9 +8,22 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AttendanceStats } from '@/types';
 
+interface UserAttendanceStats {
+  user_id: string;
+  user_name: string;
+  attend_count: number;
+}
+
 async function fetchStats(): Promise<AttendanceStats[]> {
   const response = await fetch('/api/attendance/stats');
   if (!response.ok) throw new Error('통계 조회 실패');
+  const json = await response.json();
+  return json.data || [];
+}
+
+async function fetchUserAttendanceByYear(year: number): Promise<UserAttendanceStats[]> {
+  const response = await fetch(`/api/attendance/by-year/${year}`);
+  if (!response.ok) throw new Error('연도별 통계 조회 실패');
   const json = await response.json();
   return json.data || [];
 }
@@ -25,9 +38,16 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, router]);
 
+  const currentYear = new Date().getFullYear();
+
   const { data: stats = [], isLoading } = useQuery({
     queryKey: ['stats'],
     queryFn: fetchStats,
+  });
+
+  const { data: userAttendanceStats = [], isLoading: isLoadingUserStats } = useQuery({
+    queryKey: ['userAttendanceByYear', currentYear],
+    queryFn: () => fetchUserAttendanceByYear(currentYear),
   });
 
   const totalUsers = stats[0]?.total_users || 0;
@@ -94,10 +114,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 출석 현황 - 참석 많은 순 */}
+      {/* 최근 일정 출석 현황 */}
       <div className="card">
         <h2 className="text-xl font-bold text-[rgb(var(--text-primary))] mb-4">
-          📝 출석 현황 (참석 많은 순)
+          📝 최근 일정 출석 현황
         </h2>
 
         {isLoading ? (
@@ -163,6 +183,46 @@ export default function DashboardPage() {
                     </p>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 연도별 사용자 참석 현황 */}
+      <div className="card mt-8">
+        <h2 className="text-xl font-bold text-[rgb(var(--text-primary))] mb-4">
+          👤 {currentYear}년 참석 현황 (많은 순)
+        </h2>
+
+        {isLoadingUserStats ? (
+          <div className="text-center py-8">
+            <p className="text-[rgb(var(--text-secondary))]">로딩 중...</p>
+          </div>
+        ) : userAttendanceStats.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-[rgb(var(--text-secondary))]">
+              아직 참석 기록이 없습니다.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {userAttendanceStats.map((stat, index) => (
+              <div
+                key={stat.user_id}
+                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-full bg-[rgb(var(--primary))] flex items-center justify-center text-white font-bold text-sm">
+                    {index + 1}
+                  </div>
+                  <p className="font-medium text-[rgb(var(--text-primary))]">
+                    {stat.user_name}
+                  </p>
+                </div>
+                <p className="text-lg font-bold text-[rgb(var(--success))]">
+                  {stat.attend_count}회
+                </p>
               </div>
             ))}
           </div>
