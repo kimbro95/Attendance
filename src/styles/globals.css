@@ -87,4 +87,22 @@
   .input {
     @apply bg-[rgb(var(--bg-primary))] border border-[rgb(var(--border))] text-[rgb(var(--text-primary))] px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary))];
   }
+
+  input[type='date'] {
+    @apply cursor-pointer;
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    @apply cursor-pointer brightness-100;
+    filter: invert(0);
+  }
+
+  :root.dark input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.2);
+  }
+
+  input[type='date']::-webkit-inner-spin-button,
+  input[type='date']::-webkit-outer-spin-button {
+    display: none;
+  }
 }
