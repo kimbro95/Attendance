@@ -81,12 +81,20 @@ export default function EventDetailPage() {
       map[a.user_id] = a.status;
     });
     setAttendanceMap(map);
-  }, [attendanceData]);
+  }, []);
 
   const updateMutation = useMutation({
     mutationFn: updateAttendance,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', eventId] });
+    onSuccess: (newData) => {
+      queryClient.setQueryData(['attendance', eventId], (oldData: Attendance[] = []) => {
+        const index = oldData.findIndex((a) => a.user_id === newData.user_id);
+        if (index >= 0) {
+          const updated = [...oldData];
+          updated[index] = newData;
+          return updated;
+        }
+        return [...oldData, newData];
+      });
     },
   });
 
