@@ -28,7 +28,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<User[]>>> {
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<User>>> {
   try {
     const body = await request.json();
-    const { name, email } = body;
+    const { name, created_at } = body;
 
     if (!name || name.trim().length === 0) {
       return NextResponse.json(
@@ -37,9 +37,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       );
     }
 
+    if (!created_at) {
+      return NextResponse.json(
+        { success: false, error: '가입일은 필수입니다.' },
+        { status: 400 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('users')
-      .insert([{ name, email: email || null }])
+      .insert([{ name, created_at }])
       .select()
       .single();
 

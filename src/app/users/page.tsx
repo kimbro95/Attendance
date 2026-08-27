@@ -14,7 +14,7 @@ async function fetchUsers(): Promise<User[]> {
   return json.data || [];
 }
 
-async function createUser(data: { name: string; email?: string }): Promise<User> {
+async function createUser(data: { name: string; created_at: string }): Promise<User> {
   const response = await fetch('/api/users', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -25,7 +25,7 @@ async function createUser(data: { name: string; email?: string }): Promise<User>
   return json.data;
 }
 
-async function updateUser(id: string, data: { name?: string; email?: string }): Promise<User> {
+async function updateUser(id: string, data: { name?: string; created_at?: string }): Promise<User> {
   const response = await fetch(`/api/users/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -49,7 +49,7 @@ export default function UsersPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [formData, setFormData] = useState({ name: '', created_at: '' });
 
   useEffect(() => {
     if (isAuthenticated === false) router.push('/login');
@@ -61,12 +61,12 @@ export default function UsersPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: { name: string; email?: string }) => createUser(data),
+    mutationFn: (data: { name: string; created_at: string }) => createUser(data),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; name?: string; email?: string }) =>
-      updateUser(data.id, { name: data.name, email: data.email }),
+    mutationFn: (data: { id: string; name?: string; created_at?: string }) =>
+      updateUser(data.id, { name: data.name, created_at: data.created_at }),
   });
 
   const deleteMutation = useMutation({
@@ -76,7 +76,7 @@ export default function UsersPage() {
   useEffect(() => {
     if (createMutation.isSuccess) {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      setFormData({ name: '', email: '' });
+      setFormData({ name: '', created_at: '' });
       setShowForm(false);
       createMutation.reset();
     }
@@ -85,7 +85,7 @@ export default function UsersPage() {
   useEffect(() => {
     if (updateMutation.isSuccess) {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      setFormData({ name: '', email: '' });
+      setFormData({ name: '', created_at: '' });
       setEditingId(null);
       updateMutation.reset();
     }
@@ -122,31 +122,35 @@ export default function UsersPage() {
       setError('이름은 필수입니다.');
       return;
     }
+    if (!formData.created_at) {
+      setError('가입일은 필수입니다.');
+      return;
+    }
 
     if (editingId) {
       updateMutation.mutate({
         id: editingId,
         name: formData.name,
-        email: formData.email || undefined,
+        created_at: formData.created_at,
       });
     } else {
       createMutation.mutate({
         name: formData.name,
-        email: formData.email || undefined,
+        created_at: formData.created_at,
       });
     }
   };
 
   const handleEdit = (user: User) => {
     setEditingId(user.id);
-    setFormData({ name: user.name, email: user.email || '' });
+    setFormData({ name: user.name, created_at: user.created_at });
     setShowForm(true);
   };
 
   const handleCancel = () => {
     setShowForm(false);
     setEditingId(null);
-    setFormData({ name: '', email: '' });
+    setFormData({ name: '', created_at: '' });
   };
 
   if (isAuthenticated === false) return null;
@@ -196,14 +200,13 @@ export default function UsersPage() {
 
             <div>
               <label className="block text-sm font-medium text-[rgb(var(--text-primary))] mb-2">
-                이메일 (선택)
+                가입일 *
               </label>
               <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                type="date"
+                value={formData.created_at}
+                onChange={(e) => setFormData({ ...formData, created_at: e.target.value })}
                 className="input w-full"
-                placeholder="예: kim@example.com"
               />
             </div>
 
@@ -257,13 +260,8 @@ export default function UsersPage() {
                 <p className="font-medium text-[rgb(var(--text-primary))]">
                   {user.name}
                 </p>
-                {user.email && (
-                  <p className="text-sm text-[rgb(var(--text-secondary))] mt-1">
-                    {user.email}
-                  </p>
-                )}
-                <p className="text-xs text-[rgb(var(--text-tertiary))] mt-2">
-                  {new Date(user.created_at).toLocaleDateString('ko-KR')}에 추가됨
+                <p className="text-xs text-[rgb(var(--text-tertiary))] mt-1">
+                  가입일: {new Date(user.created_at).toLocaleDateString('ko-KR')}
                 </p>
               </div>
 

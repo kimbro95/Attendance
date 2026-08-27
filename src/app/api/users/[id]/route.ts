@@ -37,7 +37,7 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, email } = body;
+    const { name, created_at } = body;
 
     if (name && name.trim().length === 0) {
       return NextResponse.json(
@@ -46,9 +46,13 @@ export async function PATCH(
       );
     }
 
+    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    if (name) updateData.name = name;
+    if (created_at) updateData.created_at = created_at;
+
     const { data, error } = await supabase
       .from('users')
-      .update({ name, email, updated_at: new Date().toISOString() })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
