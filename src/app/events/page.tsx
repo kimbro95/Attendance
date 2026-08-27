@@ -206,15 +206,13 @@ export default function EventsPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  {selectedEvent === event.id && (
-                    <a
-                      href={`/events/${event.id}`}
-                      className="btn-secondary"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      출석 체크
-                    </a>
-                  )}
+                  <a
+                    href={`/events/${event.id}`}
+                    className="btn-secondary"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    출석 체크
+                  </a>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

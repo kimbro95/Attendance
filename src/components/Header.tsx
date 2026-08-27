@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { darkModeAtom, isAuthenticatedAtom } from '@/store/atoms';
 import { removeAuthCookie } from '@/lib/auth';
@@ -9,6 +10,7 @@ import Link from 'next/link';
 export default function Header() {
   const [darkMode, setDarkMode] = useAtom(darkModeAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleDarkModeToggle = () => {
@@ -39,26 +41,36 @@ export default function Header() {
           </Link>
 
           {isAuthenticated && (
-            <nav className="hidden md:flex gap-6">
-              <Link
-                href="/dashboard"
-                className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
+            <>
+              <nav className="hidden md:flex gap-6">
+                <Link
+                  href="/dashboard"
+                  className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
+                >
+                  대시보드
+                </Link>
+                <Link
+                  href="/events"
+                  className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
+                >
+                  일정
+                </Link>
+                <Link
+                  href="/users"
+                  className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
+                >
+                  유저
+                </Link>
+              </nav>
+
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 hover:bg-[rgb(var(--bg-tertiary))] rounded-lg"
+                title="메뉴"
               >
-                대시보드
-              </Link>
-              <Link
-                href="/events"
-                className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
-              >
-                일정
-              </Link>
-              <Link
-                href="/users"
-                className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
-              >
-                유저
-              </Link>
-            </nav>
+                {mobileMenuOpen ? '✕' : '☰'}
+              </button>
+            </>
           )}
 
           <div className="flex items-center gap-4">
@@ -80,6 +92,32 @@ export default function Header() {
             )}
           </div>
         </div>
+
+        {isAuthenticated && mobileMenuOpen && (
+          <nav className="md:hidden pb-4 space-y-2">
+            <Link
+              href="/dashboard"
+              className="block px-4 py-2 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] hover:bg-[rgb(var(--bg-tertiary))] rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              대시보드
+            </Link>
+            <Link
+              href="/events"
+              className="block px-4 py-2 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] hover:bg-[rgb(var(--bg-tertiary))] rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              일정
+            </Link>
+            <Link
+              href="/users"
+              className="block px-4 py-2 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--primary))] hover:bg-[rgb(var(--bg-tertiary))] rounded-lg transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              유저
+            </Link>
+          </nav>
+        )}
       </div>
     </header>
   );
