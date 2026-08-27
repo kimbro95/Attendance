@@ -115,7 +115,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {stats.map((stat) => (
+            {[...stats].sort((a, b) => b.attend_count - a.attend_count).map((stat) => (
               <div
                 key={stat.event_id}
                 className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between hover:bg-[rgb(var(--border-dark))] transition-colors"
