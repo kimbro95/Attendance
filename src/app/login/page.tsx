@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom, errorMessageAtom } from '@/store/atoms';
 import { useRouter } from 'next/navigation';
@@ -8,10 +8,17 @@ import { verifyAdminCode, setAuthCookie, generateAuthToken } from '@/lib/auth';
 
 export default function LoginPage() {
   const [code, setCode] = useState('');
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, setError] = useAtom(errorMessageAtom);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

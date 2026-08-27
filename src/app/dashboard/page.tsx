@@ -94,10 +94,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 최근 일정 출석 현황 */}
+      {/* 출석 현황 - 참석 많은 순 */}
       <div className="card">
         <h2 className="text-xl font-bold text-[rgb(var(--text-primary))] mb-4">
-          📝 최근 일정 출석 현황
+          📝 출석 현황 (참석 많은 순)
         </h2>
 
         {isLoading ? (
