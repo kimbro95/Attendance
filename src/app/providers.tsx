@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
 import { darkModeAtom, isAuthenticatedAtom } from '@/store/atoms';
 import { getAuthCookie } from '@/lib/auth';
 
@@ -28,6 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster />
       {children}
     </QueryClientProvider>
   );
