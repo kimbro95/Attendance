@@ -248,7 +248,7 @@ export default function EventDetailPage() {
           </div>
         ) : (
           <div className="space-y-2">
-            {eligibleUsers.map((user) => (
+            {[...eligibleUsers].sort((a, b) => a.name.localeCompare(b.name)).map((user) => (
               <div
                 key={user.id}
                 className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 flex items-center justify-between hover:bg-[rgb(var(--border-dark))] transition-colors"
