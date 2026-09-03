@@ -135,10 +135,14 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {[...stats].sort((a, b) => b.attend_count - a.attend_count).map((stat) => (
-              <div
+            {[...stats]
+              .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime())
+              .slice(0, 3)
+              .map((stat) => (
+              <Link
+                href={`/events/${stat.event_id}`}
                 key={stat.event_id}
-                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 hover:bg-[rgb(var(--border-dark))] transition-colors"
+                className="bg-[rgb(var(--bg-tertiary))] rounded-lg p-4 hover:bg-[rgb(var(--border-dark))] transition-colors block cursor-pointer"
               >
                 <p className="font-medium text-[rgb(var(--text-primary))] text-base mb-3">
                   {stat.event_title}
@@ -188,7 +192,7 @@ export default function DashboardPage() {
                     })}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
